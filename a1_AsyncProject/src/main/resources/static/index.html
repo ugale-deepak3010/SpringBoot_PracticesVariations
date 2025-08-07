@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Async Task Progress</title>
+  <style>
+    .progress-bar {
+      width: 0%;
+      height: 30px;
+      background-color: #4caf50;
+      text-align: center;
+      color: white;
+      transition: width 0.5s;
+    }
+    .progress-container {
+      width: 100%;
+      background-color: #ddd;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Async Task Progress Demo (This is the Fake! every 0.5 sec it will be 10%)</h2>
+  <button onclick="runAsyncTask()">Start Async Task</button>
+
+  <div class="progress-container">
+    <div id="progress-bar" class="progress-bar">0%</div>
+  </div>
+
+  <p id="result"></p>
+
+  <script>
+    function runAsyncTask() {
+
+      const progressBar = document.getElementById("progress-bar");
+      const result = document.getElementById("result");
+      result.innerText = "";
+      progressBar.style.width = "0%";
+      progressBar.innerText = "0%";
+
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        progressBar.style.width = progress + "%";
+        progressBar.innerText = progress + "%";
+        if (progress >= 90) {
+          clearInterval(interval);
+        }
+      }, 500);
+
+      fetch("/huge-async")
+        .then((res) => res.text())
+        .then((text) => {
+          progressBar.style.width = "100%";
+          progressBar.innerText = "100%";
+          result.innerText = "✅ Result: " + text;
+        });
+    }
+  </script>
+</body>
+</html>
